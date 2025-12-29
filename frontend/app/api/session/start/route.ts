@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { startInterview } from '../../../../lib/interview-engine'
-import { sessions } from '../../../../lib/sessions'
+import { setSession, InterviewSession } from '../../../../lib/sessions'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     const sessionData = await startInterview(role, level, name, age, experience_years)
 
-    sessions.set(sessionData.session_id, {
+    const session: InterviewSession = {
       session_id: sessionData.session_id,
       role,
       level,
@@ -34,7 +34,9 @@ export async function POST(request: NextRequest) {
         started_at: sessionData.started_at,
         last_activity: sessionData.started_at,
       },
-    })
+    }
+
+    await setSession(sessionData.session_id, session)
 
     return NextResponse.json({
       session_id: sessionData.session_id,
