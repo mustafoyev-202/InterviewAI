@@ -1,4 +1,4 @@
-import { StartSessionResponse, AnswerResponse, EndSessionResponse } from '@/types'
+import { StartSessionResponse, AnswerResponse, EndSessionResponse } from '../types'
 
 const API_BASE_URL = '/api'
 
