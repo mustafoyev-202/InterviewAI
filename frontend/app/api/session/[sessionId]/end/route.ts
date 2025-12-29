@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { endInterview } from '../../../../../lib/interview-engine'
 import { textToSpeechBase64 } from '../../../../../lib/elevenlabs'
-import { getSession } from '../../../../../lib/sessions'
+import { sessions } from '../../../../../lib/sessions'
 
 export async function POST(
   request: NextRequest,
@@ -10,14 +10,14 @@ export async function POST(
   try {
     const sessionId = params.sessionId
 
-    const session = await getSession(sessionId)
-
-    if (!session) {
+    if (!sessions.has(sessionId)) {
       return NextResponse.json(
         { detail: 'Session not found' },
         { status: 404 }
       )
     }
+
+    const session = sessions.get(sessionId)
 
     const finalReport = await endInterview(
       sessionId,

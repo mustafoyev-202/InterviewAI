@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { processAnswer } from '../../../../../lib/interview-engine'
-import { getSession, setSession, InterviewSession } from '../../../../../lib/sessions'
+import { sessions } from '../../../../../lib/sessions'
 
 export async function POST(
   request: NextRequest,
@@ -11,14 +11,14 @@ export async function POST(
     const body = await request.json()
     const { answer_text } = body
 
-    const session = await getSession(sessionId)
-
-    if (!session) {
+    if (!sessions.has(sessionId)) {
       return NextResponse.json(
         { detail: 'Session not found' },
         { status: 404 }
       )
     }
+
+    const session = sessions.get(sessionId)
 
     if (!session.history || session.history.length === 0) {
       return NextResponse.json(
@@ -27,7 +27,7 @@ export async function POST(
       )
     }
 
-    let currentQuestionItem: InterviewSession['history'][number] | null = null
+    let currentQuestionItem = null
     for (let i = session.history.length - 1; i >= 0; i--) {
       if (session.history[i].answer === null) {
         currentQuestionItem = session.history[i]
@@ -56,7 +56,6 @@ export async function POST(
       session.experience_years
     )
 
-    // Update session state
     currentQuestionItem.answer = answer_text
     currentQuestionItem.evaluation = result.evaluation
     currentQuestionItem.timestamp = result.timestamp
@@ -70,8 +69,6 @@ export async function POST(
 
     session.rubric_scores.push(result.evaluation.score)
     session.timestamps.last_activity = result.timestamp
-
-    await setSession(sessionId, session)
 
     return NextResponse.json({
       followup_question_text: result.followup_question_text,
