@@ -1,6 +1,6 @@
 'use client'
 
-import { FinalReport } from '@/types'
+import { FinalReport } from '../types'
 
 interface ResultsSectionProps {
   finalReport: FinalReport

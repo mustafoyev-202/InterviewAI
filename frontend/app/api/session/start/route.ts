@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { startInterview } from '@/lib/interview-engine'
-import { sessions } from '@/lib/sessions'
+import { startInterview } from '../../../../lib/interview-engine'
+import { sessions } from '../../../../lib/sessions'
 
 export async function POST(request: NextRequest) {
   try {

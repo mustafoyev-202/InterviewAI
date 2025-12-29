@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { startSession, playAudio } from '@/lib/api'
-import { StartSessionResponse } from '@/types'
+import { startSession, playAudio } from '../lib/api'
+import { StartSessionResponse } from '../types'
 
 interface StartSectionProps {
   onStartInterview: (sessionId: string, firstQuestion: string) => void

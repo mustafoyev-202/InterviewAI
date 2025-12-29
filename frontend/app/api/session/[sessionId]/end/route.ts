@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { endInterview } from '@/lib/interview-engine'
-import { textToSpeechBase64 } from '@/lib/elevenlabs'
-import { sessions } from '@/lib/sessions'
+import { endInterview } from '../../../../../lib/interview-engine'
+import { textToSpeechBase64 } from '../../../../../lib/elevenlabs'
+import { sessions } from '../../../../../lib/sessions'
 
 export async function POST(
   request: NextRequest,

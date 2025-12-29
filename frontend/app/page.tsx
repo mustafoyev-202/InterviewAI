@@ -1,11 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import Navbar from '@/components/Navbar'
-import StartSection from '@/components/StartSection'
-import InterviewSection from '@/components/InterviewSection'
-import ResultsSection from '@/components/ResultsSection'
-import { InterviewState, Evaluation, FinalReport, TranscriptItem } from '@/types'
+import Navbar from '../components/Navbar'
+import StartSection from '../components/StartSection'
+import InterviewSection from '../components/InterviewSection'
+import ResultsSection from '../components/ResultsSection'
+import {
+  InterviewState,
+  Evaluation,
+  FinalReport,
+  TranscriptItem,
+} from '../types'
 
 export default function Home() {
   const [state, setState] = useState<InterviewState>('start')

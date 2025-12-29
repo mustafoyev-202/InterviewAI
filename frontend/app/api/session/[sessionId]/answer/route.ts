@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { processAnswer } from '@/lib/interview-engine'
-import { sessions } from '@/lib/sessions'
+import { processAnswer } from '../../../../../lib/interview-engine'
+import { sessions } from '../../../../../lib/sessions'
 
 export async function POST(
   request: NextRequest,

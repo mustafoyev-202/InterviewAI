@@ -1,9 +1,15 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { submitAnswer, endSession, playAudio } from '@/lib/api'
-import { AnswerResponse, EndSessionResponse, TranscriptItem, Evaluation, FinalReport } from '@/types'
-import { SpeechRecognitionManager } from '@/lib/speechRecognition'
+import { submitAnswer, endSession, playAudio } from '../lib/api'
+import {
+  AnswerResponse,
+  EndSessionResponse,
+  TranscriptItem,
+  Evaluation,
+  FinalReport,
+} from '../types'
+import { SpeechRecognitionManager } from '../lib/speechRecognition'
 
 interface InterviewSectionProps {
   sessionId: string
