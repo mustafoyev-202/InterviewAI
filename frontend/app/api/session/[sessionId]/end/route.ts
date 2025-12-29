@@ -1,30 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { endInterview } from '../../../../../lib/interview-engine'
 import { textToSpeechBase64 } from '../../../../../lib/elevenlabs'
-import { sessions } from '../../../../../lib/sessions'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: { sessionId: string } } // kept for route shape, but not used for state
 ) {
   try {
     const sessionId = params.sessionId
+    const body = await request.json()
+    const { role, level } = body
 
-    if (!sessions.has(sessionId)) {
+    if (!role || !level) {
       return NextResponse.json(
-        { detail: 'Session not found' },
-        { status: 404 }
+        { detail: 'Missing required fields' },
+        { status: 400 }
       )
     }
 
-    const session = sessions.get(sessionId)
-
+    // Stateless: no history or rubric scores available, so pass empty arrays.
     const finalReport = await endInterview(
       sessionId,
-      session.role,
-      session.level,
-      session.history,
-      session.rubric_scores
+      role,
+      level,
+      [],
+      []
     )
 
     const closingText = `Thank you for the interview. Your overall score is ${finalReport.overall_score.toFixed(1)} out of 10. ${finalReport.summary}`

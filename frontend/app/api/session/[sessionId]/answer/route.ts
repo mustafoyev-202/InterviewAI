@@ -1,74 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { processAnswer } from '../../../../../lib/interview-engine'
-import { sessions } from '../../../../../lib/sessions'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: { sessionId: string } } // kept for route shape, but not used for state
 ) {
   try {
     const sessionId = params.sessionId
     const body = await request.json()
-    const { answer_text } = body
+    const { answer_text, question, role, level } = body
 
-    if (!sessions.has(sessionId)) {
+    if (!answer_text || !question || !role || !level) {
       return NextResponse.json(
-        { detail: 'Session not found' },
-        { status: 404 }
-      )
-    }
-
-    const session = sessions.get(sessionId)
-
-    if (!session.history || session.history.length === 0) {
-      return NextResponse.json(
-        { detail: 'No question found in session' },
+        { detail: 'Missing required fields' },
         { status: 400 }
       )
     }
-
-    let currentQuestionItem = null
-    for (let i = session.history.length - 1; i >= 0; i--) {
-      if (session.history[i].answer === null) {
-        currentQuestionItem = session.history[i]
-        break
-      }
-    }
-
-    if (!currentQuestionItem) {
-      return NextResponse.json(
-        { detail: 'No unanswered question found in session' },
-        { status: 400 }
-      )
-    }
-
-    const currentQuestion = currentQuestionItem.question
 
     const result = await processAnswer(
       sessionId,
-      currentQuestion,
+      question,
       answer_text,
-      session.role,
-      session.level,
-      session.history,
-      session.name,
-      session.age,
-      session.experience_years
+      role,
+      level,
+      null,
+      undefined,
+      undefined,
+      undefined
     )
-
-    currentQuestionItem.answer = answer_text
-    currentQuestionItem.evaluation = result.evaluation
-    currentQuestionItem.timestamp = result.timestamp
-
-    session.history.push({
-      question: result.followup_question_text,
-      answer: null,
-      evaluation: null,
-      timestamp: result.timestamp,
-    })
-
-    session.rubric_scores.push(result.evaluation.score)
-    session.timestamps.last_activity = result.timestamp
 
     return NextResponse.json({
       followup_question_text: result.followup_question_text,

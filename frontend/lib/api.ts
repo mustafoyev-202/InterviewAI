@@ -33,14 +33,17 @@ export async function startSession(
 
 export async function submitAnswer(
   sessionId: string,
-  answerText: string
+  answerText: string,
+  question: string,
+  role: string,
+  level: string
 ): Promise<AnswerResponse> {
   const response = await fetch(`${API_BASE_URL}/session/${sessionId}/answer`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ answer_text: answerText }),
+    body: JSON.stringify({ answer_text: answerText, question, role, level }),
   })
 
   if (!response.ok) {
@@ -51,12 +54,17 @@ export async function submitAnswer(
   return response.json()
 }
 
-export async function endSession(sessionId: string): Promise<EndSessionResponse> {
+export async function endSession(
+  sessionId: string,
+  role: string,
+  level: string
+): Promise<EndSessionResponse> {
   const response = await fetch(`${API_BASE_URL}/session/${sessionId}/end`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({ role, level }),
   })
 
   if (!response.ok) {

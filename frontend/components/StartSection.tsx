@@ -5,7 +5,7 @@ import { startSession, playAudio } from '../lib/api'
 import { StartSessionResponse } from '../types'
 
 interface StartSectionProps {
-  onStartInterview: (sessionId: string, firstQuestion: string) => void
+  onStartInterview: (sessionId: string, firstQuestion: string, role: string, level: string) => void
   isProcessing: boolean
   setIsProcessing: (value: boolean) => void
 }
@@ -57,7 +57,7 @@ export default function StartSection({
         playAudio(data.interviewer_audio_url_or_base64)
       }
 
-      onStartInterview(data.session_id, data.first_question_text)
+      onStartInterview(data.session_id, data.first_question_text, role, level)
     } catch (err) {
       console.error('Error starting interview:', err)
       setError(err instanceof Error ? err.message : 'Failed to start interview. Please try again.')

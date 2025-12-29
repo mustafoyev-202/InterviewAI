@@ -21,9 +21,19 @@ export default function Home() {
   const [finalReport, setFinalReport] = useState<FinalReport | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const handleStartInterview = (newSessionId: string, firstQuestion: string) => {
+  const [role, setRole] = useState<string | null>(null)
+  const [level, setLevel] = useState<string | null>(null)
+
+  const handleStartInterview = (
+    newSessionId: string,
+    firstQuestion: string,
+    chosenRole: string,
+    chosenLevel: string
+  ) => {
     setSessionId(newSessionId)
     setCurrentQuestion(firstQuestion)
+    setRole(chosenRole)
+    setLevel(chosenLevel)
     setTranscript([{ speaker: 'Interviewer', text: firstQuestion }])
     setState('interview')
     setEvaluation(null)
@@ -55,6 +65,8 @@ export default function Home() {
     setState('start')
     setSessionId(null)
     setCurrentQuestion(null)
+    setRole(null)
+    setLevel(null)
     setTranscript([])
     setEvaluation(null)
     setFinalReport(null)
@@ -78,6 +90,8 @@ export default function Home() {
             <InterviewSection
               sessionId={sessionId}
               currentQuestion={currentQuestion}
+              role={role!}
+              level={level!}
               transcript={transcript}
               evaluation={evaluation}
               onAnswerSubmitted={handleAnswerSubmitted}

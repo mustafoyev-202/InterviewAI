@@ -14,6 +14,8 @@ import { SpeechRecognitionManager } from '../lib/speechRecognition'
 interface InterviewSectionProps {
   sessionId: string
   currentQuestion: string
+  role: string
+  level: string
   transcript: TranscriptItem[]
   evaluation: Evaluation | null
   onAnswerSubmitted: (followupQuestion: string, evaluation: Evaluation) => void
@@ -26,6 +28,8 @@ interface InterviewSectionProps {
 export default function InterviewSection({
   sessionId,
   currentQuestion,
+  role,
+  level,
   transcript,
   evaluation,
   onAnswerSubmitted,
@@ -96,7 +100,13 @@ export default function InterviewSection({
       setAnswer('')
       setInterimTranscript('')
 
-      const data: AnswerResponse = await submitAnswer(sessionId, finalAnswer)
+      const data: AnswerResponse = await submitAnswer(
+        sessionId,
+        finalAnswer,
+        currentQuestion,
+        role,
+        level
+      )
 
       // Show evaluation
       onAnswerSubmitted(data.followup_question_text, data.evaluation)
@@ -120,7 +130,7 @@ export default function InterviewSection({
       setIsProcessing(true)
       setError(null)
 
-      const data: EndSessionResponse = await endSession(sessionId)
+      const data: EndSessionResponse = await endSession(sessionId, role, level)
 
       // Play closing audio if available
       if (data.interviewer_audio_url_or_base64) {
