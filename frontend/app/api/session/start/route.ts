@@ -49,6 +49,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
-// Export sessions map for use in other routes
-export { sessions }
