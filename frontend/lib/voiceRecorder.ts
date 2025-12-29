@@ -15,6 +15,7 @@ export class VoiceRecorder {
   private audioChunks: Blob[] = []
   private stream: MediaStream | null = null
   private startTime: number = 0
+  private elapsedBeforePause: number = 0
   private durationInterval: NodeJS.Timeout | null = null
   private onStateChange?: (state: RecordingState) => void
 
@@ -63,6 +64,7 @@ export class VoiceRecorder {
 
       this.mediaRecorder.start(100) // Collect data every 100ms
       this.startTime = Date.now()
+      this.elapsedBeforePause = 0
       
       // Update duration every second
       this.durationInterval = setInterval(() => {
@@ -100,10 +102,12 @@ export class VoiceRecorder {
         clearInterval(this.durationInterval)
         this.durationInterval = null
       }
+      const elapsedMs = Date.now() - this.startTime
+      this.elapsedBeforePause = elapsedMs
       this.onStateChange?.({
         isRecording: false,
         isPaused: true,
-        duration: Math.floor((Date.now() - this.startTime) / 1000),
+        duration: Math.floor(elapsedMs / 1000),
         error: null,
       })
     }
@@ -112,7 +116,8 @@ export class VoiceRecorder {
   resumeRecording(): void {
     if (this.mediaRecorder && this.mediaRecorder.state === 'paused') {
       this.mediaRecorder.resume()
-      this.startTime = Date.now() - (this.mediaRecorder.startTime || 0)
+      // Continue duration from where we left off before pause
+      this.startTime = Date.now() - this.elapsedBeforePause
       
       this.durationInterval = setInterval(() => {
         const duration = Math.floor((Date.now() - this.startTime) / 1000)
