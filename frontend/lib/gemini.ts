@@ -192,8 +192,23 @@ export async function evaluateAnswer(
     console.log('📊 ===== END EVALUATION =====\n')
     return evaluation
   } catch (error) {
-    console.error('❌ Failed to parse evaluation JSON:', jsonText)
-    throw new Error('Invalid evaluation response format')
+    console.error('❌ Failed to parse evaluation JSON, falling back to default evaluation:', jsonText)
+    
+    // Fallback: return a safe default evaluation instead of failing the whole request
+    const fallback = {
+      score: 5,
+      strengths: ['Could not fully analyze answer due to formatting issues.'],
+      weaknesses: ['Automatic evaluation failed; this is a generic fallback.'],
+      suggestions: [
+        'Ensure your answer is clear, structured, and directly addresses the question.',
+        'Highlight specific examples and concrete details to demonstrate your experience.',
+      ],
+      missing_topics: [],
+      followup_intent: 'clarify' as const,
+    }
+
+    console.warn('⚠️ Using fallback evaluation object:', fallback)
+    return fallback
   }
 }
 
